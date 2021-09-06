@@ -83,8 +83,10 @@ public class Dashboard1_23 extends HttpServlet {
 			}
 		}
 		
-		System.out.println("final bool check un: "+foundUserName);
-		System.out.println("final bool check pw: "+foundPassword);
+		/* DEBUG CODE
+		 * System.out.println("final bool check un: "+foundUserName);
+		 * System.out.println("final bool check pw: "+foundPassword);
+		 */
 		
 		if(!foundUserName || !foundPassword) {
 			response.sendRedirect("error?un="+foundUserName+"&pw="+foundPassword);

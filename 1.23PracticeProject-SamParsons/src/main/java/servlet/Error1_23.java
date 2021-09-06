@@ -32,8 +32,12 @@ public class Error1_23 extends HttpServlet {
 		// TODO Auto-generated method stub
 		String un = request.getParameter("un");
 		String pw = request.getParameter("pw");
-		System.out.println("error un: "+un);
-		System.out.println("error pw: "+pw);
+		/*
+		 * DEBUG CODE:
+		 * System.out.println("error un: "+un);
+		 * System.out.println("error pw: "+pw);
+		 */
+		
 		PrintWriter out = response.getWriter();
 		if(un!=null&&pw!=null) {
 			
