@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.User;
 
@@ -56,37 +57,37 @@ public class Dashboard1_23 extends HttpServlet {
 			if(cookies!=null) {
 				for (int i = 0; i < cookies.length; i++) {
 					cookie = cookies[i];
+					/* DEBUGGING LOGIC
+					 * System.out.println("print cookie: "+cookie.getName()+"|"+cookie.getValue());
+					 * System.out.println("print user: "+u.getUsername()+"|"+u.getPassword());
+					 * System.out.println("bool check un: "+foundUserName+i);
+					 * System.out.println("bool check pw: "+foundPassword+i);*/
 					// check for username
-					if(cookie.getName().contentEquals("userName")&&cookie.getValue()!=null) {
-						// check for matching username
-						if(cookie.getValue().equals(u.getUsername())) {
+					if(cookie.getValue().equals(u.getUsername())) {
 						out.println("userName read from cookie: "+cookie.getValue()+"<br>");
 						out.println("userName read from ArrayList: "+u.getUsername()+"<br>");
 						foundUserName=true;
-						}
 					}
-					if(cookie.getName().contentEquals("password")&&cookie.getValue()!=null&&foundUserName) {
-						// check for matching password
-						if(cookie.getValue().equals(u.getPassword())) {
+					// check for matching password
+					if(cookie.getValue().equals(u.getPassword())&&foundUserName) {
 						out.println("password read from cookie: "+cookie.getValue()+"<br>");
 						out.println("password read from ArrayList: "+u.getPassword()+"<br>");
 						out.println("LOGIN SUCCESS<br>");
 						foundPassword=true;
-						out.println("<a href='logout'>Logout of session</a><br>");	
-						}
+						out.println("<a href='logout'>Logout of session</a><br>");
 					}
+				}
+				if(foundUserName&&foundPassword) {
+					break;
 				}
 			}
 		}
 		
-		if(!foundUserName&&!foundPassword) {
-			out.println("No UserId was found in cookie.<br>");
-		} else if (foundUserName&&!foundPassword) {
-			out.println("The password did not match.<br>");
-		} else {
-			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-			httpServletResponse.sendRedirect("error.html");
-			
+		System.out.println("final bool check un: "+foundUserName);
+		System.out.println("final bool check pw: "+foundPassword);
+		
+		if(!foundUserName || !foundPassword) {
+			response.sendRedirect("error?un="+foundUserName+"&pw="+foundPassword);
 		}
 		
 		

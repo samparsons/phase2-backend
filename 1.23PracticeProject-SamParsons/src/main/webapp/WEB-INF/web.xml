@@ -25,6 +25,10 @@
     <servlet-name>LogoutServlet</servlet-name>
   	<servlet-class>servlet.Logout1_23</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>ErrorServlet</servlet-name>
+  	<servlet-class>servlet.Error1_23</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
   	<url-pattern>/login</url-pattern>
@@ -36,5 +40,9 @@
   <servlet-mapping>
   	<servlet-name>LogoutServlet</servlet-name>
   	<url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ErrorServlet</servlet-name>
+  	<url-pattern>/error</url-pattern>
   </servlet-mapping>
 </web-app>
