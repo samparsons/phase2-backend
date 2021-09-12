@@ -8,18 +8,19 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Practice Project 2.14</title>
+    <title>User Auth</title>
   </head>
 <body>
 <div class="container">
-<h1>Product Finder</h1>
-<p>Enter a product id into the form below to see product details.</p><br>
-  <form action="list" method="POST">
+<h1>Authentication Test</h1>
+  <form action="login" method="POST">
   	<div class="form-group">
-  		<label for="productId">Input ProductId</label>
-  		<input class="form-control" type="text" id="productId" name="productId"><br>
+  		<label for="username">Username:</label>
+  		<input type="text" name="username" id="username"><br>
+  		<label for="password">Password:</label>
+  		<input type="password" name="password" id="password">
   	</div>
-  		<button type="submit" class="btn btn-primary">Submit</button>
+  		<button type="submit" class="btn btn-primary">Login</button>
   </form>
  </div>
 </body>

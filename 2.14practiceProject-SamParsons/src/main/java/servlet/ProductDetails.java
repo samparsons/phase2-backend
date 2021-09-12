@@ -3,9 +3,11 @@ package servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -36,55 +38,34 @@ public class ProductDetails extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			String productId = request.getParameter("productId");
+			String productIdInput = request.getParameter("productId");
 			PrintWriter out = response.getWriter();
-			out.println("<html><body>");
+			out.println("<!doctype html><html lang='en'> <head> <meta charset='utf-8'> <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'> <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'> <title>Product Details</title> </head><body>");
 			InputStream in = getServletContext().getResourceAsStream("WEB-INF/config.properties");
 			Properties props = new Properties();
 			props.load(in);
 			
 			DBConnection conn = new DBConnection(props.getProperty("url"), props.getProperty("userid"), props.getProperty("password"));
-			Statement stmt = conn.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			ResultSet resultSet = stmt.executeQuery("SELECT * FROM eproduct WHERE ID = "+productId+";");
-			boolean empty = false;
-			while( resultSet.next() ) {
-			    // ResultSet processing here
-			    empty = true;
+			Statement stmt = conn.getConnection().createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY
+					);
+			String query = "SELECT * FROM eproduct WHERE ID = "+productIdInput+";";
+			ResultSet resultSet = stmt.executeQuery(query);
+			boolean results = false;
+			
+			while(resultSet.next()) {
+				results = true;
+				int productId 		= resultSet.getInt("ID");
+	            String name 		= resultSet.getString("name");
+	            BigDecimal price 	= resultSet.getBigDecimal("price");
+	            Timestamp dateAdded 	= resultSet.getTimestamp("date_added");
+				out.println("<div class='container'><h1>Product Details</h1><br><table class='table'><thead><tr><th scope='col'>ProductId</th><th scope='col'>Product Name</th><th scope='col'>Price</th><th scope='col'>Date Added</th></tr></thead><tbody><tr><th scope='row'>"+productId+"</th><td>"+name+"</td><td>"+price+"</td><td>"+dateAdded+"</td></tr></tbody></table></div>");
 			}
-
-			if( empty ) {
-			
-
-			productId 			= resultSet.getString(1);
-            String name 		= resultSet.getString(2);
-            String price 		= resultSet.getString(3);
-            String dateAdded 	= resultSet.getString(4);
-            
-			out.println("resultSet: "+resultSet.toString());
-			//finish table 
-			out.println("<div><h1>Product Details</h1><br>"
-					+ "<table class='table'>"
-					+ "  <thead>\n"
-					+ "    <tr>\n"
-					+ "      <th scope=\"col\">#</th>\n"
-					+ "      <th scope=\"col\">First</th>\n"
-					+ "      <th scope=\"col\">Last</th>\n"
-					+ "      <th scope=\"col\">Handle</th>\n"
-					+ "    </tr>\n"
-					+ "  </thead>\n"
-					+ "  <tbody>\n"
-					+ "    <tr>\n"
-					+ "      <th scope=\"row\">1</th>\n"
-					+ "      <td>Mark</td>\n"
-					+ "      <td>Otto</td>\n"
-					+ "      <td>@mdo</td>\n"
-					+ "    </tr>\n"
-					+ ""
-					+ "</div>");
-			
-			out.println("Executed an SELECT operation<br>");
-			
+			if(!results) {
+				out.println("<div class='container'><h1>Product Details</h1><br><div class='alert alert-danger' role='alert'>There was an error. No results found with that Product Id.</div><br><br><figure><blockquote class='blockquote'><p>'For everything you have missed, you have gained something else, and for everything you gain, you lose something else.'</p></blockquote><figcaption class='blockquote-footer'>Ralph Waldo Emerson <cite title='“Ralph Waldo Emerson: Selected Essays, Lectures and Poems”, p.72, Bantam Classics'>'Ralph Waldo Emerson: Selected Essays, Lectures and Poems', p.72, Bantam Classics</cite></figcaption></figure></div>");
 			}
+			
 			stmt.close();
 			conn.closeConnection();
 			out.println("</body></html>");
