@@ -17,6 +17,7 @@ import org.hibernate.Transaction;
 
 import shop.Product;
 import shop.ProductImage;
+import shop.ProductImageMeta;
 import util.HibernateUtil;
 
 /**
@@ -49,17 +50,42 @@ public class NewProduct extends HttpServlet {
 		ProductImage img1 = new ProductImage("a.jpg");
 		ProductImage img2 = new ProductImage("b.jpg");
 		
+		ProductImageMeta meta1 = new ProductImageMeta("1","a");
+		ProductImageMeta meta2 = new ProductImageMeta("2","b");
 		
+		ProductImageMeta meta3 = new ProductImageMeta("3","c");
+		ProductImageMeta meta4 = new ProductImageMeta("4","d");
 		
+		List<ProductImageMeta> metas1 = new ArrayList<>();
+		List<ProductImageMeta> metas2 = new ArrayList<>();
+		
+			
 		img1.setProduct(p1);
 		img2.setProduct(p1);
 		
+		meta1.setProductImage(img1);
+		meta2.setProductImage(img1);
+		
+		meta3.setProductImage(img2);
+		meta4.setProductImage(img2);
+		
+		metas1.add(meta1);
+		metas1.add(meta2);
+		
+		metas2.add(meta3);
+		metas2.add(meta4);
+		
+		img1.setImageMeta(metas1);
+		img2.setImageMeta(metas2);
 		
 		images.add(img1);
 		
 		images.add(img2);
 		
+		
+		
 		p1.setImages(images);
+		
 		
 		
 		
