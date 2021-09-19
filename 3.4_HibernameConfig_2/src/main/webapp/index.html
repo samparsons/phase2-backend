@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Lab 3.4 modified</title>
+  </head>
+<body>
+<div class="container">
+<h1>Product Finder</h1>
+<p>Enter a product id into the form below to see product details.</p><br>
+  <form action="newProduct" method="POST">
+  	<div class="form-group">
+  		<label for="productId">Input Product Name</label>
+  		<input class="form-control" type="text" id="name" name="name"><br>
+  		<label for="productId">Input Price</label>
+  		<input class="form-control" type="text" id="price" name="price"><br>
+  	</div>
+  		<button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <a href="init">Initialize Hibernate</a>
+ </div>
+</body>
+</html>
