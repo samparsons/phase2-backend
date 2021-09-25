@@ -15,9 +15,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import shop.Account;
+import shop.Address;
 import shop.Product;
 import shop.ProductImage;
 import shop.ProductImageMeta;
+import shop.User;
 import util.HibernateUtil;
 
 /**
@@ -40,6 +43,7 @@ public class NewProduct extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		/*
 		String name = "phone";
 		double price = 17.99;
 		
@@ -63,11 +67,19 @@ public class NewProduct extends HttpServlet {
 		img1.addImageMeta(meta2);
 		img2.addImageMeta(meta3);
 		img2.addImageMeta(meta4);
+		*/
 		
 		SessionFactory factory = HibernateUtil.getSessionFactory();		
 		Session session = factory.openSession();		
 		Transaction trans = session.beginTransaction();		
-		session.save(p1);		
+		
+		Address address = new Address("First St.","Miami","Florida","45678");
+		
+		Account acct = new Account("john345","pw123");
+		
+		User user = new User("John","Doe",acct,address);
+			
+		session.save(user);		
 		trans.commit();		
 		session.close();
 		

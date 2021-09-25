@@ -15,6 +15,8 @@
 	<mapping class="shop.ProductImageMeta"/>
 	<mapping class="shop.ProductImage"/>
 	<mapping class="shop.Product"/>
+	<mapping class="shop.Address"/>
+	<mapping class="shop.User"/>
 	
 	
 	
