@@ -26,4 +26,12 @@
     <servlet-name>FlightsServlet</servlet-name>
     <url-pattern>/dist/flights</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>DataGenServlet</servlet-name>
+    <servlet-class>dist.servlet.DataGen</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DataGenServlet</servlet-name>
+    <url-pattern>/dist/datagen</url-pattern>
+  </servlet-mapping>
 </web-app>

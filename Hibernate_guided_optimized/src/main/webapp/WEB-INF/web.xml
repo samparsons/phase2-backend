@@ -41,4 +41,34 @@
   	<url-pattern>/getProduct</url-pattern>
   </servlet-mapping>
 
+	<servlet>
+  	<servlet-name>GetAllProductsServlet</servlet-name>
+  	<servlet-class>servlet.GetAllProducts</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>GetAllProductsServlet</servlet-name>
+  	<url-pattern>/all_products</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<servlet-name>DeleteProductsServlet</servlet-name>
+  	<servlet-class>servlet.DeleteProduct</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>DeleteProductsServlet</servlet-name>
+  	<url-pattern>/delete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<servlet-name>UpdateProductsServlet</servlet-name>
+  	<servlet-class>servlet.UpdateProduct</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>UpdateProductsServlet</servlet-name>
+  	<url-pattern>/update</url-pattern>
+  </servlet-mapping>
+
 </web-app>

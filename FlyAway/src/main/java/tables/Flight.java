@@ -24,10 +24,13 @@ public class Flight {
 	
 	private String airlineName;
 	private String departCity;
+	private String departAirport;
 	private String arriveCity;
+	private String arriveAirport;
 	private String terminal;
-	private String gate;
+	private Integer gate;
 	private double price;
+	private int capacity;
 	private Date dateTime;
 	
 	//@OneToMany(mappedBy="flight",cascade=CascadeType.ALL)
@@ -41,16 +44,19 @@ public class Flight {
 	
 	
 	
-	public Flight(String airlineName, String departCity, String arriveCity, String terminal, String gate, double price,
-			Date dateTime) {
+	public Flight(String airlineName, String departCity, String departAirport,String arriveCity, String arriveAirport,String terminal, Integer gate, double price,
+			Date dateTime,int capacity) {
 		super();
 		this.airlineName = airlineName;
 		this.departCity = departCity;
+		this.departAirport = departAirport;
 		this.arriveCity = arriveCity;
+		this.arriveAirport = arriveAirport;
 		this.terminal = terminal;
 		this.gate = gate;
 		this.price = price;
 		this.dateTime = dateTime;
+		this.capacity = capacity;
 		//flights = new ArrayList<FlightRegistry>();
 	}
 
@@ -59,10 +65,48 @@ public class Flight {
 	//public void addFlight(FlightRegistry flight) {
 	//	flights.add(flight);
 	//}
+	
+	
 
 	public String getAirlineName() {
 		return airlineName;
 	}
+
+	public int getCapacity() {
+		return capacity;
+	}
+
+
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+
+
+	public String getDepartAirport() {
+		return departAirport;
+	}
+
+
+
+	public void setDepartAirport(String departAirport) {
+		this.departAirport = departAirport;
+	}
+
+
+
+	public String getArriveAirport() {
+		return arriveAirport;
+	}
+
+
+
+	public void setArriveAirport(String arriveAirport) {
+		this.arriveAirport = arriveAirport;
+	}
+
+
 
 	public void setAirlineName(String airlineName) {
 		this.airlineName = airlineName;
@@ -92,11 +136,11 @@ public class Flight {
 		this.terminal = terminal;
 	}
 
-	public String getGate() {
+	public Integer getGate() {
 		return gate;
 	}
 
-	public void setGate(String gate) {
+	public void setGate(Integer gate) {
 		this.gate = gate;
 	}
 

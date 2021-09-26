@@ -41,51 +41,41 @@ public class NewProduct extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		/*
-		String name = "phone";
-		double price = 17.99;
 		
-		List<ProductImage> images = new ArrayList<>();
+		String name = request.getParameter("pname");
+		double price = Double.parseDouble(request.getParameter("price"));
+		String imageUrl = request.getParameter("imageUrl");
+		String imageMetaKey = request.getParameter("imageMetaKey");
+		String imageMetaValue = request.getParameter("imageMetaValue");
 		
-		Product p1 = new Product(name,price);
+		//List<ProductImage> images = new ArrayList<>();
 		
-		ProductImage img1 = new ProductImage("a.jpg",p1);
-		ProductImage img2 = new ProductImage("b.jpg",p1);
+		Product newProduct = new Product(name,price);
 		
-		ProductImageMeta meta1 = new ProductImageMeta("1","a",img1);
-		ProductImageMeta meta2 = new ProductImageMeta("2","b",img1);
+		ProductImage img1 = new ProductImage(imageUrl,newProduct);
 		
-		ProductImageMeta meta3 = new ProductImageMeta("3","c",img2);
-		ProductImageMeta meta4 = new ProductImageMeta("4","d",img2);
+		ProductImageMeta meta1 = new ProductImageMeta(imageMetaKey,imageMetaValue,img1);
 		
-		
-		p1.addImage(img1);
-		p1.addImage(img2);
-		img1.addImageMeta(meta1);
-		img1.addImageMeta(meta2);
-		img2.addImageMeta(meta3);
-		img2.addImageMeta(meta4);
-		*/
+		newProduct.addImage(img1);
+		img1.addImageMeta(meta1);		
 		
 		SessionFactory factory = HibernateUtil.getSessionFactory();		
 		Session session = factory.openSession();		
 		Transaction trans = session.beginTransaction();		
-		
+		/*
 		Address address = new Address("First St.","Miami","Florida","45678");
 		
 		Account acct = new Account("john345","pw123");
 		
 		User user = new User("John","Doe",acct,address);
-			
-		session.save(user);		
+		*/	
+		session.save(newProduct);		
 		trans.commit();		
 		session.close();
 		
-		PrintWriter out = response.getWriter();
-		out.println("<html><body>New Product Saved");
-		out.println("</body></html>");
+		response.sendRedirect("list_product.jsp");
 		
  	}
 }

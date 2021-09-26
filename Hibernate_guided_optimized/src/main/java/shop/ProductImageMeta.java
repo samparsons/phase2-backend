@@ -29,6 +29,15 @@ public class ProductImageMeta {
 		this.meta_value = meta_value;
 		this.productImage = productImage;
 	}
+	
+	
+
+
+	public ProductImageMeta() {
+		super();
+	}
+
+
 
 
 	public int getMetaId() {
