@@ -15,6 +15,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Calendar" %>
 <%@ page import="javax.persistence.criteria.Predicate" %>
 <%@ page import="util.HibernateUtil" %>
 <%@ page import="tables.Flight" %>
@@ -68,11 +69,11 @@
             </div>
         </nav>
         <!-- Masthead-->
-        <header class="masthead">
-            <div class="container px-4 px-lg-5 h-100">
-                <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
-                    <div class="col-lg-8 align-self-end">
-                    <table class="table">
+        <section class="page-section bg-light" id="book">
+            <div class="container px-5 px-lg-5">
+                <div class="row gx-5 gx-lg-5 justify-content-center">
+                    <div class="col-lg-12 text-center">
+                    <table class="table table-striped table-hover">
 						<thead>
 							<tr>
 						    	<th scope="col">Flight Number</th>
@@ -95,11 +96,20 @@
 							String in = request.getParameter("date");
 							SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 							Date convertDate = sdf.parse(in);
-							SimpleDateFormat queryDate = new SimpleDateFormat("yyyy-MM-dd");
+							SimpleDateFormat queryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							String date = queryDate.format(convertDate);
-							String date1 = date + " 00:00:00";
-							String date2 = date + " 23:59:59";
+							Date date1 = queryDate.parse(date);
+							Date date2 = queryDate.parse(date);
 							
+							//convert date2 to calendar to add hours,min,sec
+							Calendar c = Calendar.getInstance();
+        					c.setTime(date2);
+        					c.add(Calendar.HOUR, 23);
+        			        c.add(Calendar.MINUTE, 59);
+        			        c.add(Calendar.SECOND, 59);
+        			        
+        			        date2 = c.getTime();
+
 							
 							
 							String depart = request.getParameter("depart");
@@ -117,46 +127,21 @@
 							
 							
 							Session se = HibernateUtil.getSessionFactory().openSession();
-							
-							
 					    	se.beginTransaction();
 							CriteriaBuilder cb = se.getCriteriaBuilder();
 							CriteriaQuery<Flight> cr = cb.createQuery(Flight.class);
 							Root<Flight> root = cr.from(Flight.class);
-							/*
-							Predicate[] predicates = new Predicate[5];
-							
-							predicates[0] = cb.equal(root.get("arriveCity"),arrive);
-							predicates[1] = cb.equal(root.get("departCity"),depart);
-							predicates[2] = cb.ge(root.get("capacity"),capacity);
-							predicates[3] = cb.greaterThanOrEqualTo(root.get("dateTime"),date1);
-							predicates[4] = cb.lessThanOrEqualTo(root.get("dateTime"),date2);
-							*/
+							/* helpful link: https://www.baeldung.com/hibernate-criteria-queries*/
+
 							Predicate equalsArriveCity = cb.equal(root.get("arriveCity"),arrive);
 							Predicate equalsDepartCity = cb.equal(root.get("departCity"),depart);
-							Predicate hasCapacity = cb.ge(root.get("capacity"),capacity);
-							Predicate gtDate = cb.greaterThanOrEqualTo(root.get("dateTime"),date1);
-							Predicate ltDate = cb.lessThanOrEqualTo(root.get("dateTime"),date2);
+							Predicate hasCapacity = cb.ge(root.<Integer>get("capacity"),capacity);
+							Predicate gtDate = cb.greaterThanOrEqualTo(root.<Date>get("dateTime"),date1);
+							Predicate ltDate = cb.lessThanOrEqualTo(root.<Date>get("dateTime"),date2);
 							
 							cr.select(root).where(cb.and(equalsArriveCity,equalsDepartCity,hasCapacity,gtDate,ltDate));
 							Query<Flight> query = se.createQuery(cr);
-							/*
-				            String hql = "SELECT f.flightId,f.airlineName,f.arriveCity,f.arriveAirport,f.departCity,f.departAirport,f.price,f.capacity FROM Flight f "
-					    				+"WHERE f.arriveCity='"+arrive+"' AND f.departCity='"+depart+"'  AND f.capacity>="+capacity+" AND f.dateTime>='"+date+" 00:00:00' AND f.dateTime<='"+date+" 23:59:59' ORDER BY f.dateTime";
-				            
-					    	Query<Flight> query = se.createQuery(hql);
-				            */
-					    	
-				            
-				            /*
-				            query.setParameter(":depart", depart);
-				            query.setParameter(":arrive", arrive);
-				            query.setParameter(":capacity", capacity);
-				            query.setParameter(":date", date);
-				            */
-
 				            List<Flight> flights = query.getResultList();
-				            
 				            for(Flight f : flights) {
 		            	%>
 						
@@ -182,10 +167,9 @@
 						  </tbody>
 						</table>
                     </div>
-                    
                 </div>
             </div>
-        </header>
+        </section>
         <!-- Footer-->
         <footer class="bg-light py-5">
             <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2021 - FlyAway</div></div>
