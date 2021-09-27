@@ -15,6 +15,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="javax.persistence.criteria.Predicate" %>
 <%@ page import="util.HibernateUtil" %>
 <%@ page import="tables.Flight" %>
 
@@ -90,49 +91,73 @@
 						<% 
 						//START JAVA
 							
+							//handle date reformat
 							String in = request.getParameter("date");
 							SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 							Date convertDate = sdf.parse(in);
 							SimpleDateFormat queryDate = new SimpleDateFormat("yyyy-MM-dd");
 							String date = queryDate.format(convertDate);
+							String date1 = date + " 00:00:00";
+							String date2 = date + " 23:59:59";
+							
+							
 							
 							String depart = request.getParameter("depart");
 							String arrive = request.getParameter("arrive");
 							Integer capacity = Integer.parseInt(request.getParameter("capacity"));
 							
+							
+							
 							//DEBUG
-							System.out.println("date: "+date);
+							System.out.println("date1: "+date1);
+							System.out.println("date1: "+date2);
 							System.out.println("depart: "+depart);
 							System.out.println("arrive: "+arrive);
 							System.out.println("capacity: "+capacity);
 							
-							/*
+							
+							Session se = HibernateUtil.getSessionFactory().openSession();
+							
+							
+					    	se.beginTransaction();
 							CriteriaBuilder cb = se.getCriteriaBuilder();
 							CriteriaQuery<Flight> cr = cb.createQuery(Flight.class);
 							Root<Flight> root = cr.from(Flight.class);
-							cr.select(root)
-							.where( 
-									cb.
-									);
+							/*
+							Predicate[] predicates = new Predicate[5];
+							
+							predicates[0] = cb.equal(root.get("arriveCity"),arrive);
+							predicates[1] = cb.equal(root.get("departCity"),depart);
+							predicates[2] = cb.ge(root.get("capacity"),capacity);
+							predicates[3] = cb.greaterThanOrEqualTo(root.get("dateTime"),date1);
+							predicates[4] = cb.lessThanOrEqualTo(root.get("dateTime"),date2);
 							*/
-							Session se = HibernateUtil.getSessionFactory().openSession();
+							Predicate equalsArriveCity = cb.equal(root.get("arriveCity"),arrive);
+							Predicate equalsDepartCity = cb.equal(root.get("departCity"),depart);
+							Predicate hasCapacity = cb.ge(root.get("capacity"),capacity);
+							Predicate gtDate = cb.greaterThanOrEqualTo(root.get("dateTime"),date1);
+							Predicate ltDate = cb.lessThanOrEqualTo(root.get("dateTime"),date2);
+							
+							cr.select(root).where(cb.and(equalsArriveCity,equalsDepartCity,hasCapacity,gtDate,ltDate));
+							Query<Flight> query = se.createQuery(cr);
+							/*
+				            String hql = "SELECT f.flightId,f.airlineName,f.arriveCity,f.arriveAirport,f.departCity,f.departAirport,f.price,f.capacity FROM Flight f "
+					    				+"WHERE f.arriveCity='"+arrive+"' AND f.departCity='"+depart+"'  AND f.capacity>="+capacity+" AND f.dateTime>='"+date+" 00:00:00' AND f.dateTime<='"+date+" 23:59:59' ORDER BY f.dateTime";
+				            
+					    	Query<Flight> query = se.createQuery(hql);
+				            */
+					    	
+				            
+				            /*
+				            query.setParameter(":depart", depart);
+				            query.setParameter(":arrive", arrive);
+				            query.setParameter(":capacity", capacity);
+				            query.setParameter(":date", date);
+				            */
 
-						    try {
-						    	se.beginTransaction();
-					            String hql = "SELECT f.flightId,f.airlineName,f.arriveCity,f.arriveAirport,f.departCity,f.departAirport,f.price,f.capacity FROM Flight f "
-						    				+"WHERE f.arriveCity='"+arrive+"' AND f.departCity='"+depart+"'  AND f.capacity>="+capacity+" AND f.dateTime>='"+date+" 00:00:00' AND f.dateTime<='"+date+" 23:59:59' ORDER BY f.dateTime";
-					            Query<Flight> query = se.createQuery(hql);
-					            
-					            /*
-					            query.setParameter(":depart", depart);
-					            query.setParameter(":arrive", arrive);
-					            query.setParameter(":capacity", capacity);
-					            query.setParameter(":date", date);
-					            */
-
-					            List<Flight> flights = query.getResultList();
-					            
-					            for(Flight f : flights) {
+				            List<Flight> flights = query.getResultList();
+				            
+				            for(Flight f : flights) {
 		            	%>
 						
 						<tr>
@@ -148,14 +173,10 @@
 					    </tr>
 						
 						
-						<%		}//close for loop
-				            } catch (HibernateException e) {
-					        if (se.getTransaction() != null) {
-					        	se.getTransaction().rollback();
-					        }
-						    } finally {
-						    	se.close();
-						    }
+						<%		
+							}//close for loop
+					    	se.close();
+						  
 						//END JAVA
 						%>
 						  </tbody>
