@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.HibernateException;
+
 //import tables.FlightRegistry;
 
 @Entity
@@ -35,7 +37,6 @@ public class Flight {
 	
 	//@OneToMany(mappedBy="flight",cascade=CascadeType.ALL)
 	//private List<FlightRegistry> flights;
-		
 	
 	
 	public Flight() {

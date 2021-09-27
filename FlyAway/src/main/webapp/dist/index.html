@@ -74,7 +74,7 @@ The theme was downloaded here: https://startbootstrap.com/theme/creative
                     <div class="col-lg-12 text-center">
                         <h2 class="text-white mt-0">Book Now!</h2>
                         <hr class="divider divider-light" />
-                        <form class="row g-3 align-items-center" action="/FlyAway/dist/flights" method="POST">
+                        <form class="row g-3 align-items-center" action="/FlyAway/dist/flights.jsp" method="POST">
 					    	<div class="col-auto">
 					    	<div class="input-group flex-nowrap">
 							  <label for="date" class="visually-hidden">Date</label>
@@ -93,7 +93,7 @@ The theme was downloaded here: https://startbootstrap.com/theme/creative
 					      		<input type="text" class="form-control" placeholder="Arrive City" name="arrive"  id="date">
 					    	</div>
 					    	<div class="col-auto">
-					      		<select class="form-select" aria-label="Number of Passengers">
+					      		<select class="form-select" aria-label="Number of Passengers" name="capacity" id="capacity">
 									<option selected>Number of Passengers</option>
 								  	<option value="1">1</option>
 								  	<option value="2">2</option>
