@@ -36,7 +36,6 @@ public class ProductImage {
 		super();
 		this.imageUrl = imageUrl;
 		this.product = product;
-		
 		imageMeta = new ArrayList<>();
 	}
 	

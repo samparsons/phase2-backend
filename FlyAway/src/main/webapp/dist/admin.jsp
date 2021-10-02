@@ -1,12 +1,58 @@
-<!--  
-HELLO SIMPLILEARN INSTRUCTORS:
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="org.hibernate.HibernateException" %>
+<%@ page import="org.hibernate.SessionFactory" %>
+<%@ page import="org.hibernate.criterion.Restrictions" %>
+<%@ page import="javax.persistence.criteria.CriteriaBuilder" %>
+<%@ page import="javax.persistence.criteria.CriteriaQuery" %>
+<%@ page import="javax.persistence.criteria.Root" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="javax.persistence.criteria.Predicate" %>
+<%@ page import="util.HibernateUtil" %>
+<%@ page import="tables.Flight" %>
+<%@ page import="tables.Airport" %>
+<%@ page import="tables.Airline" %>
 
-The theme was downloaded here: https://startbootstrap.com/theme/creative
-data sets were downloaded here: https://datahub.io/core/airport-codes (however I will dump my db for you to use).
-	mysqldump -u root -p flyaway > flyaway_backup.sql
-
--->
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	List<Airport> airports = new ArrayList<Airport>();
+	List<Airline> airlines = new ArrayList<Airline>();
+	List<Flight> flights = new ArrayList<Flight>();
+	Session se = HibernateUtil.getSessionFactory().openSession();
+	Integer pg_id = Integer.parseInt(request.getParameter("pg"));
+	if(pg_id==1){ //Sources and Destinations aka Airports
+		se.beginTransaction();
+		CriteriaBuilder cb = se.getCriteriaBuilder();
+		CriteriaQuery<Airport> cr = cb.createQuery(Airport.class);
+		Root<Airport> root = cr.from(Airport.class);
+		cr.select(root);
+		Query<Airport> query = se.createQuery(cr);
+        airports = query.getResultList();
+	} else if (pg_id==2) { //Airlines
+		se.beginTransaction();
+		CriteriaBuilder cb = se.getCriteriaBuilder();
+		CriteriaQuery<Airline> cr = cb.createQuery(Airline.class);
+		Root<Airline> root = cr.from(Airline.class);
+		cr.select(root);
+		Query<Airline> query = se.createQuery(cr);
+        airlines = query.getResultList();
+	} else if (pg_id==3) { //Flights
+    	se.beginTransaction();
+		CriteriaBuilder cb = se.getCriteriaBuilder();
+		CriteriaQuery<Flight> cr = cb.createQuery(Flight.class);
+		Root<Flight> root = cr.from(Flight.class);
+		cr.select(root);
+		Query<Flight> query = se.createQuery(cr);
+        flights = query.getResultList();
+	} 
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,7 +60,7 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>FlyAway - Begin Your Adventure</title>
+        <title>FlyAway - Admin Portal</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap Icons-->
@@ -50,70 +96,55 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
                         <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Flights</a></li>
                         <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.html">Admin Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/admin.jsp?pg=1">Sources and Destinations</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/admin.jsp?pg=2">Airline List</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/admin.jsp?pg=3">Flight List</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container px-4 px-lg-5 h-100">
-                <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
-                    <div class="col-lg-8 align-self-end">
-                        <h1 class="text-white font-weight-bold">Your Favorite Place to Fly Away</h1>
-                        <hr class="divider" />
-                    </div>
-                    <div class="col-lg-8 align-self-baseline">
-                        <p class="text-white-75 mb-5">Get away from it all. Climb aboard one of our luxury 747's heading to your dream destination. Trust your travel to us!</p>
-                        <a class="btn btn-primary btn-xl" href="#book">Search For Your Next Adventure</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- Book -->
-        <section class="page-section bg-primary" id="book">
+        <!-- Admin Page -->
+        <section class="page-section bg-light" id="register">
             <div class="container px-5 px-lg-5">
                 <div class="row gx-5 gx-lg-5 justify-content-center">
                     <div class="col-lg-12 text-center">
-                        <h2 class="text-white mt-0">Book Now!</h2>
-                        <hr class="divider divider-light" />
-                        <form class="row g-3 align-items-center" action="/FlyAway/dist/flights.jsp" method="POST">
-					    	<div class="col-auto">
-					    	<div class="input-group flex-nowrap">
-							  <label for="date" class="visually-hidden">Date</label>
-					    		<span class="input-group-text" id="addon-wrapping">
-			                        <i class="fa fa-calendar">
-			                        </i>
-			                    </span>
-					    		<input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text" aria-label="date" aria-describedby="addon-wrapping"/>
-							</div>
-					    		
-					    	</div>
-					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="Depart City" name="depart"  id="date">
-					    	</div>
-					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="Arrive City" name="arrive"  id="date">
-					    	</div>
-					    	<div class="col-auto">
-					      		<select class="form-select" aria-label="Number of Passengers" name="capacity" id="capacity">
-									<option selected>Number of Passengers</option>
-								  	<option value="1">1</option>
-								  	<option value="2">2</option>
-								  	<option value="3">3</option>
-								  	<option value="4">4</option>
-								  	<option value="5">5</option>
-								  	<option value="6">6</option>
-								  	<option value="7">7</option>
-								  	<option value="8">8</option>
-								</select>
-					    	</div>
-					    	<button type="submit" class="btn btn-secondary col-auto">Submit</button>
-						</form>
+                        <h2 class="text-primary mt-0">Admin Portal</h2>
+                        <hr class="divider divider-primary" />
+                        <%
+                        //error handling block here.
+                        %>
+                        <%
+                        if(pg_id==1){ //Sources and Destinations aka Airports
+                    		for(Airport a : airports){
+                    			%>
+                    			<%
+                    		}
+                    	} else if (pg_id==2) { //Airlines
+							for(Airline a : airlines){
+                    			%>
+                    			<%
+                    		}
+
+                    	} else if (pg_id==3) { //Flights
+							for(Flight f : flights){
+                    			%>
+                    			<%
+                    		}
+                    	} else if (pg_id==4) {
+                			%>
+                			<%
+                    		// change pw
+                    	}
+                        
+                        
+                        %>
+                        <a href="/FlyAway/dist/admin.jsp?pg=4">Change Password</a>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- Footer-->
+        <% se.close(); %>
+<!-- Footer-->
         <footer class="bg-light py-5">
             <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2021 - FlyAway</div></div>
             <div class="container px-4 px-lg-5"><div class="small text-center text-muted"><a href="https://startbootstrap.com/theme/creative/" target="_blank">Download this theme at Start Bootstrap</a></div></div>
@@ -125,17 +156,5 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
         <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-        <script>
-		    $(document).ready(function(){
-		        var date_input=$('input[name="date"]'); //our date input has the name "date"
-		        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-		        date_input.datepicker({
-		            format: 'mm/dd/yyyy',
-		            container: container,
-		            todayHighlight: true,
-		            autoclose: true,
-		        })
-		    })
-		</script>
     </body>
 </html>

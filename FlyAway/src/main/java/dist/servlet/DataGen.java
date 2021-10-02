@@ -137,9 +137,11 @@ public class DataGen extends HttpServlet {
 			if(arriveCity.equals("NA")) {
 				arriveCity = "Springfield";
 			}
-			
+						
 			//add the flight
 			Flight flight = new Flight(airlineName,departCity,departAirport,arriveCity,arriveAirport,terminal,gate,price,dateTime,capacity);
+			flight.setAirportDepart(airportDepart);
+			flight.setAirportArrive(airportArrive);
 			Transaction tr = session.beginTransaction();
 			
 			session.save(flight);

@@ -2,13 +2,16 @@
 <%@ page import="org.hibernate.SessionFactory" %>
 <%@ page import="util.HibernateUtil" %>
 <%@ page import="tables.Flight" %>
+<%@ page import="tables.Customer" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
 	Session se = HibernateUtil.getSessionFactory().openSession();
 	int flight_id = Integer.parseInt(request.getParameter("flight_id"));
+	int customer_id = Integer.parseInt(request.getParameter("customer_id"));
 	int capacity = Integer.parseInt(request.getParameter("capacity"));
 	Flight f = se.load(Flight.class,flight_id);
+	Customer c = se.load(Customer.class,customer_id);
 	
 %>
 <!DOCTYPE html>
@@ -57,68 +60,67 @@
                 </div>
             </div>
         </nav>
-        <!-- Customer Registration -->
+        <!-- Payment Info -->
         <section class="page-section bg-light" id="register">
             <div class="container px-5 px-lg-5">
                 <div class="row gx-5 gx-lg-5 justify-content-center">
                     <div class="col-lg-12 text-center">
-                        <h2 class="text-primary mt-0">Customer Registration</h2>
+                        <h2 class="text-primary mt-0">Credit Card Payment - Enter your card details</h2>
                         <hr class="divider divider-primary" />
                         <%
                         //error handling block here.
                         %>
-                        <form class="row g-3 align-items-center" action="register?flight_id=<%=f.getFlightId() %>&capacity=<%=capacity %>" method="POST">
+                        <form class="row g-3 align-items-center" action="payment?flight_id=<%=f.getFlightId() %>&customer_id=<%=c.getCustomer_Id() %>&capacity=<%=capacity %>" method="POST">
+					    	
 					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="First Name" name="firstName"  id="firstName">
+					    		<label for="cc_name">Name on Card</label>
+					      		<input type="text" class="form-control" name="cc_name"  id="cc_name">
 					    	</div>
 					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="Last Name" name="lastName"  id="lastName">
-					    	</div>
-					    	<div class="col-auto">
+					    		<label for="credit_card_num">Credit Card Number</label>
 						    	<div class="input-group flex-nowrap">
-								  <label for="birth_date" class="visually-hidden">Birth Date</label>
 						    		<span class="input-group-text" id="addon-wrapping">
-				                        <i class="fa fa-user-circle-o">
+				                        <i class="fa fa-credit-card">
 				                        </i>
 				                    </span>
-						    		<input class="form-control" id="dateOfBirth" name="dateOfBirth" placeholder="DOB - MM/DD/YYY" type="text" aria-label="date" aria-describedby="addon-wrapping"/>
+						    		<input class="form-control" id="cc_num" name="cc_num" placeholder="Credit Card Number" type="text" aria-label="cc_num" aria-describedby="addon-wrapping"/>
 								</div>
 					    	</div>
 					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="Street Address" name="st_address"  id="st_address">
-					    	</div>
-					    	<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="Age" name="age"  id="age">
-					    	</div>
-					    	<div class="col-auto">
-					      		<select class="form-select" aria-label="Gender" name="gender" id="gender">
-									<option selected>Gender</option>
-								  	<option value="1">Male</option>
-								  	<option value="2">Female</option>
-								  	<option value="3">Prefer not to Say</option>
+					      		<label for="cc_month">Month</label>
+	                            <select class="form-select" id="cc_month" name="cc_month">
+	                                <option>1</option>
+	                                <option>2</option>
+	                                <option>3</option>
+	                                <option>4</option>
+	                                <option>5</option>
+	                                <option>6</option>
+	                                <option>7</option>
+	                                <option>8</option>
+	                                <option>9</option>
+	                                <option>10</option>
+	                                <option>11</option>
+	                                <option>12</option>
+	                            </select>
+							</div>
+							<div class="col-auto">
+								<label for="ccmonth">Year</label>
+					      		<select class="form-select" aria-label="cc_year" name="cc_year" id="cc_year">
+									<option>2021</option>
+	                                <option>2022</option>
+	                                <option>2023</option>
+	                                <option>2024</option>
+	                                <option>2025</option>
+	                                <option>2026</option>
+	                                <option>2027</option>
+	                                <option>2028</option>
+	                                <option>2029</option>
+	                                <option>2030</option>
 								</select>
 							</div>
 							<div class="col-auto">
-					      		<select class="form-select" aria-label="ID Type" name="id_type" id="id_type">
-									<option selected>ID Type</option>
-								  	<option value="1">Drivers License</option>
-								  	<option value="2">ID Card</option>
-								  	<option value="2">Military ID</option>
-								  	<option value="3">Passport</option>
-								</select>
-							</div>
-							<div class="col-auto">
-					      		<input type="text" class="form-control" placeholder="ID Number" name="id_num"  id="id_num">
-					    	</div>
-					    	<div class="col-auto">
-						    	<div class="input-group flex-nowrap">
-								  <label for="id_exp_date" class="visually-hidden">Exp Date</label>
-						    		<span class="input-group-text" id="addon-wrapping">
-				                        <i class="fa fa-id-card-o">
-				                        </i>
-				                    </span>
-						    		<input class="form-control" id="id_exp_date" name="id_exp_date" placeholder="EXP - MM/DD/YYY" type="text" aria-label="date" aria-describedby="addon-wrapping"/>
-								</div>
+								<label for="cc_month">CCV/CVC</label>
+					      		<input type="text" class="form-control" name="ccv"  id="ccv">
 					    	</div>
 					    	<button type="submit" class="btn btn-secondary col-auto">Submit</button>
 						</form>
@@ -126,12 +128,44 @@
                 </div>
             </div>
         </section>
-        <!-- Flight Info -->
+        <!-- Customer Info -->
         <section class="page-section bg-light" id="flight_info">
             <div class="container px-5 px-lg-5">
                 <div class="row gx-5 gx-lg-5 justify-content-center">
                     <div class="col-lg-12 text-center">
-                        <h4 class="text-primary mt-0">Flight Information</h4>
+                        <h4 class="text-primary mt-0">Customer Information</h4>
+                        <hr class="divider divider-primary" />
+                        <table class="table table-striped table-hover">
+							<thead>
+								<tr>
+						    		<th scope="col"></th>
+						    		<th scope="col">First Name</th>
+						      		<th scope="col">Last Name</th>
+						      		<th scope="col">Birth Date</th>
+						      		<th scope="col">Street Address</th>
+						      		<th scope="col">Age</th>
+						      		<th scope="col">Gender</th>
+						      		<th scope="col">ID Type</th>
+						      		<th scope="col">ID Number</th>
+						      		<th scope="col">ID Exp Date</th>
+						   		</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">1</th>
+								    <td><%=c.getFirstName() %></td>
+								    <td><%=c.getLastName() %></td>
+								    <td><%=c.getDateOfBirth() %></td>
+								    <td><%=c.getSt_address() %></td>
+								    <td><%=c.getAge() %></td>
+								    <td><%=c.getGender() %></td>
+								    <td><%=c.getId_type() %></td>
+								    <td><%=c.getId_num() %></td>
+								    <td><%=c.getId_Exp_date() %></td>
+						    	</tr>
+						   	</tbody>
+						</table>
+						<h4 class="text-primary mt-0">Flight Information</h4>
                         <hr class="divider divider-primary" />
                         <table class="table table-striped table-hover">
 							<thead>
@@ -154,7 +188,6 @@
 								    <td><%=f.getDepartCity() %></td>
 								    <td><%=f.getDepartAirport() %></td>
 								    <td><%=f.getPrice() %></td>
-								    <% se.close(); %>
 						    	</tr>
 						   	</tbody>
 						</table>
@@ -162,6 +195,8 @@
                 </div>
             </div>
         </section>
+       <% se.close(); %>
+        
         <!-- Footer-->
         <footer class="bg-light py-5">
             <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2021 - FlyAway</div></div>
@@ -174,25 +209,5 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
-        <script>
-		    $(document).ready(function(){
-		        var date_input1=$('input[name="dateOfBirth"]'); //our date input has the name "date"
-		        var date_input2=$('input[name="id_exp_date"]');
-		        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-		        date_input1.datepicker({
-		            format: 'mm/dd/yyyy',
-		            container: container,
-		            todayHighlight: true,
-		            autoclose: true,
-		        })
-		        date_input2.datepicker({
-		            format: 'mm/dd/yyyy',
-		            container: container,
-		            todayHighlight: true,
-		            autoclose: true,
-		        })
-		    })
-		    
-		</script>
     </body>
 </html>

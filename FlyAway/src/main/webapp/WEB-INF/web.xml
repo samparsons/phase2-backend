@@ -34,4 +34,28 @@
     <servlet-name>DataGenServlet</servlet-name>
     <url-pattern>/dist/datagen</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>RegistrationServlet</servlet-name>
+    <servlet-class>dist.servlet.Registration</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RegistrationServlet</servlet-name>
+    <url-pattern>/dist/register</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>PaymentProcessingServlet</servlet-name>
+    <servlet-class>dist.servlet.PaymentProcessing</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PaymentProcessingServlet</servlet-name>
+    <url-pattern>/dist/payment</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>FlightRegistrationServlet</servlet-name>
+    <servlet-class>dist.servlet.SaveFlightRegistry</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FlightRegistrationServlet</servlet-name>
+    <url-pattern>/dist/flightRegister</url-pattern>
+  </servlet-mapping>
 </web-app>

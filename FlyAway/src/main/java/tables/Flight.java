@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,7 +24,7 @@ public class Flight {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int flightId;
+	private int flight_Id;
 	
 	private String airlineName;
 	private String departCity;
@@ -35,8 +37,14 @@ public class Flight {
 	private int capacity;
 	private Date dateTime;
 	
-	//@OneToMany(mappedBy="flight",cascade=CascadeType.ALL)
-	//private List<FlightRegistry> flights;
+	@ManyToOne(fetch=FetchType.LAZY)
+	private Airport airportArrive;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	private Airport airportDepart;
+	
+	@OneToMany(mappedBy="flight",cascade=CascadeType.ALL)
+	private List<FlightRegistry> flights; 
 	
 	
 	public Flight() {
@@ -58,16 +66,32 @@ public class Flight {
 		this.price = price;
 		this.dateTime = dateTime;
 		this.capacity = capacity;
-		//flights = new ArrayList<FlightRegistry>();
+		flights = new ArrayList<FlightRegistry>();
+	}
+		
+	public Airport getAirportArrive() {
+		return airportArrive;
 	}
 
+	public Airport getAirportDepart() {
+		return airportDepart;
+	}
 
+	public List<FlightRegistry> getFlights() {
+		return flights;
+	}
 
-	//public void addFlight(FlightRegistry flight) {
-	//	flights.add(flight);
-	//}
+	public void setFlightRegistry(FlightRegistry flight) {
+		flights.add(flight);
+	}
 	
+	public void setAirportDepart(Airport airport) {
+		this.airportDepart = airport;
+	}
 	
+	public void setAirportArrive(Airport airport) {
+		this.airportArrive = airport;
+	}
 
 	public String getAirlineName() {
 		return airlineName;
@@ -162,7 +186,7 @@ public class Flight {
 	}
 
 	public int getFlightId() {
-		return flightId;
+		return flight_Id;
 	}
 	
 	

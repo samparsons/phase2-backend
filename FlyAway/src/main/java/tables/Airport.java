@@ -1,8 +1,13 @@
 package tables;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,6 +22,12 @@ public class Airport {
 	private String iata_code;
 	private String city_name;
 	
+	@OneToMany(mappedBy="airportArrive",cascade=CascadeType.ALL)
+	private List<Flight> flightsArrive;
+	
+	@OneToMany(mappedBy="airportDepart",cascade=CascadeType.ALL)
+	private List<Flight> flightsDepart;
+	
 	public Airport() {
 		super();
 	}
@@ -28,11 +39,22 @@ public class Airport {
 		this.iso_region = iso_region;
 		this.iata_code = iata_code;
 		this.city_name = city_name;
+		flightsArrive = new ArrayList<>();
+		flightsDepart = new ArrayList<>();
+	}
+	
+	public void addFlightArrive(Flight flight) {
+		flightsArrive.add(flight);
+	}
+	
+	public void addFlightDepart(Flight flight) {
+		flightsDepart.add(flight);
 	}
 	
 	public String getAirport_name() {
 		return airport_name;
 	}
+	
 	public void setAirport_name(String airport_name) {
 		this.airport_name = airport_name;
 	}

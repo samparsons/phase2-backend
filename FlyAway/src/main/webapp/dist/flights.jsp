@@ -154,7 +154,7 @@
 					      <td><%=f.getDepartAirport() %></td>
 					      <td><%=f.getPrice() %></td>
 					      
-					      <td><a class="btn btn-primary btn-sm" href="registration.jsp?flight_id=<%=f.getFlightId() %>">Choose Flight</a></td>
+					      <td><a class="btn btn-primary btn-sm" href="registration.jsp?flight_id=<%=f.getFlightId() %>&capacity=<%=capacity %>">Choose Flight</a></td>
 					    </tr>
 						
 						
