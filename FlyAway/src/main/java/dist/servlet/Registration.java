@@ -16,6 +16,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import tables.Customer;
+import util.FormValidator;
 import util.HibernateUtil;
 
 /**
@@ -61,28 +62,93 @@ public class Registration extends HttpServlet {
 		System.out.println("exp_dateIn: "+exp_dateIn);
 		System.out.println("flight_id: "+flight_id);
 		
-		
-		
-		Date dateOfBirth = null;
-		Date exp_date = null;
-		try {
-			dateOfBirth = sdf.parse(dateOfBirthIn);
-			exp_date = sdf.parse(exp_dateIn);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//ERROR CHECK
+		if(gender.equals("Gender")){
+			gender=null;
 		}
 		
-		Customer nc = new Customer(firstName,lastName,dateOfBirth,st_address,gender,id_type,id_num,exp_date);
+		if(id_type.equals("ID Type")){
+			id_type=null;
+		}
+
+		System.out.println("isAlphabet(firstName): "+FormValidator.isAlphabet(firstName));
+		System.out.println("isAlphabet(lastName): "+FormValidator.isAlphabet(lastName));
+		System.out.println("isDateTime(dateOfBirthIn): "+FormValidator.isDateTime(dateOfBirthIn));
+		System.out.println("isAlphabet(st_address): "+FormValidator.isAlphanumeric(st_address));
+		System.out.println("isAlphabet(gender): "+FormValidator.isAlphabet(gender));
+		System.out.println("isAlphabet(id_type): "+FormValidator.isAlphabet(id_type));
+		System.out.println("isAlphabet(id_num): "+FormValidator.isAlphanumeric(id_num));
+		System.out.println("isDateTime(exp_dateIn): "+FormValidator.isDateTime(exp_dateIn));
+		System.out.println("isInt(capacity): "+FormValidator.isInt(capacity));
+		System.out.println("isInt(flight_id): "+FormValidator.isInt(flight_id));
 		
-		SessionFactory factory = HibernateUtil.getSessionFactory();		
-		Session session = factory.openSession();		
-		Transaction trans = session.beginTransaction();
-		session.save(nc);		
-		trans.commit();		
-		
-		
-		response.sendRedirect("payment.jsp?customer_id="+nc.getCustomer_Id()+"&flight_id="+flight_id+"&capacity="+capacity);
-		session.close();
+		//ERROR CHECK
+		if( !FormValidator.isAlphabet(firstName)||
+			!FormValidator.isAlphabet(lastName)||
+			!FormValidator.isDateTime(dateOfBirthIn)||
+			!FormValidator.isAlphanumeric(st_address)||
+			!FormValidator.isAlphabet(gender)||
+			!FormValidator.isAlphabet(id_type)||
+			!FormValidator.isAlphanumeric(id_num)||
+			!FormValidator.isDateTime(exp_dateIn)||
+			!FormValidator.isInt(capacity)||
+			!FormValidator.isInt(flight_id)){
+			
+			String err = "";
+			
+        	if( !FormValidator.isAlphabet(firstName) ){
+        		err += "err01";
+        	}
+    		if ( !FormValidator.isAlphabet(lastName) ) {
+    			err += "err02";
+        	}
+    		if ( !FormValidator.isDateTime(dateOfBirthIn) ) {
+    			err += "err03";
+        	}
+    		if ( !FormValidator.isAlphanumeric(st_address) ) {
+    			err += "err04";
+        	}
+    		if ( !FormValidator.isAlphabet(gender) ) {
+    			err += "err05";
+        	}
+    		if ( !FormValidator.isAlphabet(id_type) ) {
+    			err += "err06";
+        	}
+    		if ( !FormValidator.isAlphanumeric(id_num) ) {
+    			err += "err07";
+        	}
+    		if ( !FormValidator.isDateTime(exp_dateIn) ) {
+    			err += "err08";
+        	}
+    		if ( !FormValidator.isInt(capacity) ) {
+    			err += "err09";
+        	}
+    		if ( !FormValidator.isInt(flight_id) ) {
+    			err += "err10";
+        	}
+    		response.sendRedirect("registration.jsp?error="+err+"&flight_id="+flight_id+"&capacity="+capacity);
+		} else {
+			Date dateOfBirth = null;
+			Date exp_date = null;
+			try {
+				dateOfBirth = sdf.parse(dateOfBirthIn);
+				exp_date = sdf.parse(exp_dateIn);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Customer nc = new Customer(firstName,lastName,dateOfBirth,st_address,gender,id_type,id_num,exp_date);
+			
+			SessionFactory factory = HibernateUtil.getSessionFactory();		
+			Session session = factory.openSession();		
+			Transaction trans = session.beginTransaction();
+			session.save(nc);		
+			trans.commit();		
+			
+			
+			response.sendRedirect("payment.jsp?customer_id="+nc.getCustomer_Id()+"&flight_id="+flight_id+"&capacity="+capacity);
+			session.close();
+		}
 	}
 }

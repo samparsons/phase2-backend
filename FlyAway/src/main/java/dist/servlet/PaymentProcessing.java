@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import tables.Payment;
+import util.FormValidator;
 import util.HibernateUtil;
 
 /**
@@ -44,6 +45,7 @@ public class PaymentProcessing extends HttpServlet {
 		String customer_id = request.getParameter("customer_id");
 		String capacity = request.getParameter("capacity");
 		
+		cc_num = cc_num.replaceAll("\\s+","");
 		
 		//DEBUG
 		
@@ -53,17 +55,64 @@ public class PaymentProcessing extends HttpServlet {
 		System.out.println("cc_year: "+cc_year);
 		System.out.println("ccv: "+ccv);
 		
-		Payment pmt = new Payment(cc_name,cc_num,cc_month,cc_year,ccv);
+		//ERROR CHECK
+		System.out.println("isAlphabet(cc_name): "+FormValidator.isAlphabet(cc_name));
+		System.out.println("isInt(cc_num): "+FormValidator.isInt(cc_num));
+		System.out.println("isInt(cc_month): "+FormValidator.isInt(cc_month));
+		System.out.println("isInt(cc_year): "+FormValidator.isInt(cc_year));
+		System.out.println("isInt(ccv): "+FormValidator.isInt(ccv));
+		System.out.println("isInt(flight_id): "+FormValidator.isInt(flight_id));
+		System.out.println("isInt(customer_id): "+FormValidator.isInt(customer_id));
+		System.out.println("isInt(capacity): "+FormValidator.isInt(capacity));
 		
-		SessionFactory factory = HibernateUtil.getSessionFactory();		
-		Session session = factory.openSession();		
-		Transaction trans = session.beginTransaction();
-		session.save(pmt);		
-		trans.commit();		
-		
-		
-		response.sendRedirect("flightRegister?customer_id="+customer_id+"&flight_id="+flight_id+"&payment_id="+pmt.getPayment_Id()+"&capacity="+capacity);
-		session.close();
-		
+		//ERROR CHECK
+		if( !FormValidator.isAlphabet(cc_name)||
+			!FormValidator.isInt(cc_num)||
+			!FormValidator.isInt(cc_month)||
+			!FormValidator.isInt(cc_year)||
+			!FormValidator.isInt(ccv)||
+			!FormValidator.isInt(capacity)||
+			!FormValidator.isInt(customer_id)||
+			!FormValidator.isInt(flight_id)){
+			
+			String err = "";
+			
+        	if( !FormValidator.isAlphabet(cc_name) ){
+        		err += "err01";
+        	}
+    		if ( !FormValidator.isInt(cc_num) ) {
+    			err += "err02";
+        	}
+    		if ( !FormValidator.isInt(cc_month) ) {
+    			err += "err03";
+        	}
+    		if ( !FormValidator.isInt(cc_year) ) {
+    			err += "err04";
+        	}
+    		if ( !FormValidator.isInt(ccv) ) {
+    			err += "err05";
+        	}
+    		if ( !FormValidator.isInt(capacity) ) {
+    			err += "err06";
+        	}
+    		if ( !FormValidator.isInt(customer_id) ) {
+    			err += "err07";
+        	}
+    		if ( !FormValidator.isInt(flight_id) ) {
+    			err += "err08";
+    		}
+    		response.sendRedirect("payment.jsp?error="+err+"&customer_id="+customer_id+"&flight_id="+flight_id+"&capacity="+capacity);
+		} else {
+			Payment pmt = new Payment(cc_name,cc_num,cc_month,cc_year,ccv);
+			
+			Session session = HibernateUtil.getSessionFactory().openSession();	
+			Transaction trans = session.beginTransaction();
+			session.save(pmt);		
+			trans.commit();		
+			
+			
+			response.sendRedirect("flightRegister?customer_id="+customer_id+"&flight_id="+flight_id+"&payment_id="+pmt.getPayment_Id()+"&capacity="+capacity);
+			session.close();
+		}
 	}
 }

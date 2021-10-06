@@ -4,13 +4,6 @@
 <%@ page import="tables.Flight" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	Session se = HibernateUtil.getSessionFactory().openSession();
-	int flight_id = Integer.parseInt(request.getParameter("flight_id"));
-	int capacity = Integer.parseInt(request.getParameter("capacity"));
-	Flight f = se.load(Flight.class,flight_id);
-	
-%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,17 +39,88 @@
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light-fixed-top py-3">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">FlyAway</a>
+                <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Test Data</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Flights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.jsp">Admin Login</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
+        <%
+		String error = request.getParameter("error");
+		
+		if(error!=null){
+			%>
+			<section class="page-section bg-light" id="register">
+				<div class="alert alert-danger" role="alert">
+			<%
+			if(error.indexOf("01")>=0){
+				%>
+		   			<b>First name has invalid characters or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("02")>=0){
+				%>
+	   				<b>Last name has invalid characters or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("03")>=0){
+				%>
+		   			<b>Date of birth is not a valid date or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("04")>=0){
+				%>
+		   			<b>Street address is not a valid address or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("05")>=0){
+				%>
+		   			<b>Gender is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("06")>=0){
+				%>
+		   			<b>ID type is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("07")>=0){
+				%>
+		   			<b>Id number contains illegal characters or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("08")>=0){
+				%>
+		   			<b>Exp date is not a valid date or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("09")>=0){
+				%>
+		   			<b>Capacity is not a valid number or is blank.</b><br>
+				<%
+			}
+			if(error.indexOf("10")>=0){
+				%>
+		   			<b>flight_id is not a valid number or is blank.</b><br>
+				<%
+			}
+			
+			%>
+				</div>
+			</section>
+			<%
+		}
+		try{
+		Session se = HibernateUtil.getSessionFactory().openSession();
+		int flight_id = Integer.parseInt(request.getParameter("flight_id"));
+		int capacity = Integer.parseInt(request.getParameter("capacity"));
+		Flight f = se.load(Flight.class,flight_id);
+		%>
         <!-- Customer Registration -->
         <section class="page-section bg-light" id="register">
             <div class="container px-5 px-lg-5">
@@ -93,18 +157,18 @@
 					    	<div class="col-auto">
 					      		<select class="form-select" aria-label="Gender" name="gender" id="gender">
 									<option selected>Gender</option>
-								  	<option value="1">Male</option>
-								  	<option value="2">Female</option>
-								  	<option value="3">Prefer not to Say</option>
+								  	<option value="Male">Male</option>
+								  	<option value="Female">Female</option>
+								  	<option value="Undisclosed">Prefer not to Say</option>
 								</select>
 							</div>
 							<div class="col-auto">
 					      		<select class="form-select" aria-label="ID Type" name="id_type" id="id_type">
 									<option selected>ID Type</option>
-								  	<option value="1">Drivers License</option>
-								  	<option value="2">ID Card</option>
-								  	<option value="2">Military ID</option>
-								  	<option value="3">Passport</option>
+								  	<option value="Drivers License">Drivers License</option>
+								  	<option value="ID Card">ID Card</option>
+								  	<option value="Military ID">Military ID</option>
+								  	<option value="Passport">Passport</option>
 								</select>
 							</div>
 							<div class="col-auto">
@@ -154,10 +218,21 @@
 								    <td><%=f.getDepartCity() %></td>
 								    <td><%=f.getDepartAirport() %></td>
 								    <td><%=f.getPrice() %></td>
-								    <% se.close(); %>
 						    	</tr>
 						   	</tbody>
 						</table>
+						<% 
+						se.close();
+						} catch (Exception e) {
+							%>
+							<div class="alert alert-danger" role="alert">
+							<b>There was an error with your query or url parameters.</b>
+							</div>
+							<%
+						}
+						
+						
+						%>
                     </div>
                 </div>
             </div>

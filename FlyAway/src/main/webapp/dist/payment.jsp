@@ -5,15 +5,6 @@
 <%@ page import="tables.Customer" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%
-	Session se = HibernateUtil.getSessionFactory().openSession();
-	int flight_id = Integer.parseInt(request.getParameter("flight_id"));
-	int customer_id = Integer.parseInt(request.getParameter("customer_id"));
-	int capacity = Integer.parseInt(request.getParameter("capacity"));
-	Flight f = se.load(Flight.class,flight_id);
-	Customer c = se.load(Customer.class,customer_id);
-	
-%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -49,21 +40,84 @@
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">FlyAway</a>
+                <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Test Data</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Flights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.jsp">Admin Login</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <!-- Payment Info -->
         <section class="page-section bg-light" id="register">
             <div class="container px-5 px-lg-5">
                 <div class="row gx-5 gx-lg-5 justify-content-center">
+        	<%
+			String error = request.getParameter("error");
+		
+			if(error!=null){
+				%>
+					<div class="alert alert-danger" role="alert">
+				<%
+				if(error.indexOf("01")>=0){
+					%>
+			   			<b>Name on Card has invalid characters or is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("02")>=0){
+					%>
+		   				<b>Credit Card number has invalid characters or is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("03")>=0){
+					%>
+			   			<b>Month is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("04")>=0){
+					%>
+			   			<b>Year is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("05")>=0){
+					%>
+			   			<b>CCV has invalid characters or is blank.</b><br>
+					<%
+				}
+				
+				if(error.indexOf("06")>=0){
+					%>
+			   			<b>Capacity is not a valid number or is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("07")>=0){
+					%>
+			   			<b>customer_id is not a valid number or is blank.</b><br>
+					<%
+				}
+				if(error.indexOf("08")>=0){
+					%>
+			   			<b>flight_id is not a valid number or is blank.</b><br>
+					<%
+				}
+				%>
+				</div>
+				<%
+			}
+			
+			try{
+			Session se = HibernateUtil.getSessionFactory().openSession();
+			int flight_id = Integer.parseInt(request.getParameter("flight_id"));
+			int customer_id = Integer.parseInt(request.getParameter("customer_id"));
+			int capacity = Integer.parseInt(request.getParameter("capacity"));
+			Flight f = se.load(Flight.class,flight_id);
+			Customer c = se.load(Customer.class,customer_id);			
+			%>
+        <!-- Payment Info -->
+        
                     <div class="col-lg-12 text-center">
                         <h2 class="text-primary mt-0">Credit Card Payment - Enter your card details</h2>
                         <hr class="divider divider-primary" />
@@ -89,33 +143,35 @@
 					    	<div class="col-auto">
 					      		<label for="cc_month">Month</label>
 	                            <select class="form-select" id="cc_month" name="cc_month">
-	                                <option>1</option>
-	                                <option>2</option>
-	                                <option>3</option>
-	                                <option>4</option>
-	                                <option>5</option>
-	                                <option>6</option>
-	                                <option>7</option>
-	                                <option>8</option>
-	                                <option>9</option>
-	                                <option>10</option>
-	                                <option>11</option>
-	                                <option>12</option>
+	                                <option selected value=""></option>
+	                                <option value="1">1</option>
+	                                <option value="2">2</option>
+	                                <option value="3">3</option>
+	                                <option value="4">4</option>
+	                                <option value="5">5</option>
+	                                <option value="6">6</option>
+	                                <option value="7">7</option>
+	                                <option value="8">8</option>
+	                                <option value="9">9</option>
+	                                <option value="10">10</option>
+	                                <option value="11">11</option>
+	                                <option value="12">12</option>
 	                            </select>
 							</div>
 							<div class="col-auto">
 								<label for="ccmonth">Year</label>
 					      		<select class="form-select" aria-label="cc_year" name="cc_year" id="cc_year">
-									<option>2021</option>
-	                                <option>2022</option>
-	                                <option>2023</option>
-	                                <option>2024</option>
-	                                <option>2025</option>
-	                                <option>2026</option>
-	                                <option>2027</option>
-	                                <option>2028</option>
-	                                <option>2029</option>
-	                                <option>2030</option>
+									<option selected value=""></option>
+									<option value="2021">2021</option>
+	                                <option value="2022">2022</option>
+	                                <option value="2023">2023</option>
+	                                <option value="2024">2024</option>
+	                                <option value="2025">2025</option>
+	                                <option value="2026">2026</option>
+	                                <option value="2027">2027</option>
+	                                <option value="2028">2028</option>
+	                                <option value="2029">2029</option>
+	                                <option value="2030">2030</option>
 								</select>
 							</div>
 							<div class="col-auto">
@@ -195,7 +251,16 @@
                 </div>
             </div>
         </section>
-       <% se.close(); %>
+       <%	se.close();
+			} catch (Exception e){
+				%>
+				<div class="alert alert-danger" role="alert">
+				<b>There was an error with your query or url parameters.</b>
+				</div>
+				<%
+			}
+			
+			%>
         
         <!-- Footer-->
         <footer class="bg-light py-5">

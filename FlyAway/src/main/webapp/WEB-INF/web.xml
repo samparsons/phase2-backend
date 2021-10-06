@@ -58,4 +58,12 @@
     <servlet-name>FlightRegistrationServlet</servlet-name>
     <url-pattern>/dist/flightRegister</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminOpsServlet</servlet-name>
+    <servlet-class>dist.servlet.AdminOps</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminOpsServlet</servlet-name>
+    <url-pattern>/dist/adminOps</url-pattern>
+  </servlet-mapping>
 </web-app>

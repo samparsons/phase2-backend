@@ -18,6 +18,7 @@
 <%@ page import="java.util.Calendar" %>
 <%@ page import="javax.persistence.criteria.Predicate" %>
 <%@ page import="util.HibernateUtil" %>
+<%@ page import="util.FormValidator" %>
 <%@ page import="tables.Flight" %>
 
 <!DOCTYPE html>
@@ -55,16 +56,15 @@
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light-fixed-top py-3">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
-                  <!--  navbar if I need it later.
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Flights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.jsp">Admin Login</a></li>
                     </ul>
-                     -->
                 </div>
             </div>
         </nav>
@@ -73,25 +73,64 @@
             <div class="container px-5 px-lg-5">
                 <div class="row gx-5 gx-lg-5 justify-content-center">
                     <div class="col-lg-12 text-center">
-                    <table class="table table-striped table-hover">
-						<thead>
-							<tr>
-						    	<th scope="col">Flight Number</th>
-						      	<th scope="col">Airline Name</th>
-						      	<th scope="col">Arrive City</th>
-						      	<th scope="col">Arrive Airport</th>
-						      	<th scope="col">Depart City</th>
-						      	<th scope="col">Depart Airport</th>
-						      	<th scope="col">Price</th>
-						      	<th scope="col"></th>
-						      	
-						   	</tr>
-						</thead>
-						<tbody>
+                    
 						
 						<% 
 						//START JAVA
+							String dateCheck = request.getParameter("date");
+							String arriveCheck = request.getParameter("arrive");
+							String departCheck = request.getParameter("depart");
+							String capacityCheck = request.getParameter("capacity");
 							
+							if(capacityCheck.equals("Number of Passengers")){
+								capacityCheck=null;
+							}
+							
+							System.out.println("dateCheck: "+dateCheck);
+							System.out.println("arriveCheck: "+arriveCheck);
+							System.out.println("departCheck: "+departCheck);
+							System.out.println("capacityCheck: "+capacityCheck);
+							
+							System.out.println("isAlphabet(depart): "+FormValidator.isAlphabet(departCheck));
+							System.out.println("isAlphabet(arrive): "+FormValidator.isAlphabet(arriveCheck));
+							System.out.println("isDateTime(date1): "+FormValidator.isDateTime(dateCheck));
+							System.out.println("isInt(capacityCheck): "+FormValidator.isInt(capacityCheck));
+							
+							//ERROR CHECK
+							if(!FormValidator.isAlphabet(departCheck)||
+								!FormValidator.isAlphabet(arriveCheck)||
+								!FormValidator.isDateTime(dateCheck)||
+								!FormValidator.isInt(capacityCheck)){
+								
+									%>
+		                    		<div class="alert alert-danger" role="alert">
+		                    		<% 
+			                    	if( !FormValidator.isAlphabet(departCheck) ){
+			                    		%>
+										<b>Departure city has invalid characters or is blank.</b><br>
+			                    		<%
+			                    	}
+		                    		if ( !FormValidator.isAlphabet(arriveCheck) ) {
+			                    		%>
+										<b>Arrival city has invalid characters or is blank.</b><br>
+			                    		<%
+			                    	}
+		                    		if ( !FormValidator.isDateTime(dateCheck) ) {
+			                    		%>
+										<b>Date is invalid or is blank.</b><br>
+			                    		<%
+			                    	}
+		                    		if ( !FormValidator.isInt(capacityCheck) ) {
+			                    		%>
+										<b>Selected number of passengers is not a number.</b><br>
+			                    		<%
+			                    	}
+			                    	%>
+									</div>
+		                    		<%
+							} else {
+							
+							try{
 							//handle date reformat
 							String in = request.getParameter("date");
 							SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -103,12 +142,12 @@
 							
 							//convert date2 to calendar to add hours,min,sec
 							Calendar c = Calendar.getInstance();
-        					c.setTime(date2);
-        					c.add(Calendar.HOUR, 23);
-        			        c.add(Calendar.MINUTE, 59);
-        			        c.add(Calendar.SECOND, 59);
-        			        
-        			        date2 = c.getTime();
+	    					c.setTime(date2);
+	    					c.add(Calendar.HOUR, 23);
+	    			        c.add(Calendar.MINUTE, 59);
+	    			        c.add(Calendar.SECOND, 59);
+	    			        
+	    			        date2 = c.getTime();
 
 							
 							
@@ -118,12 +157,14 @@
 							
 							
 							
+							
 							//DEBUG
 							System.out.println("date1: "+date1);
 							System.out.println("date1: "+date2);
 							System.out.println("depart: "+depart);
 							System.out.println("arrive: "+arrive);
 							System.out.println("capacity: "+capacity);
+							
 							
 							
 							Session se = HibernateUtil.getSessionFactory().openSession();
@@ -142,6 +183,24 @@
 							cr.select(root).where(cb.and(equalsArriveCity,equalsDepartCity,hasCapacity,gtDate,ltDate));
 							Query<Flight> query = se.createQuery(cr);
 				            List<Flight> flights = query.getResultList();
+				            
+				        %>
+				        <table class="table table-striped table-hover">
+						<thead>
+							<tr>
+						    	<th scope="col">Flight Number</th>
+						      	<th scope="col">Airline Name</th>
+						      	<th scope="col">Arrive City</th>
+						      	<th scope="col">Arrive Airport</th>
+						      	<th scope="col">Depart City</th>
+						      	<th scope="col">Depart Airport</th>
+						      	<th scope="col">Price</th>
+						      	<th scope="col"></th>
+						      	
+						   	</tr>
+						</thead>
+						<tbody>
+				        <%
 				            for(Flight f : flights) {
 		            	%>
 						
@@ -160,16 +219,37 @@
 						
 						<%		
 							}//close for loop
+				           
 					    	se.close();
 						  
 						//END JAVA
 						%>
 						  </tbody>
 						</table>
+				<%
+					if(flights.size()<1){
+						%>
+                		<div class="alert alert-danger" role="alert">
+                		<b>Sorry, no results found for that search.</b>
+                		</div>
+                		<% 
+					}
+				}catch(Exception e){
+					%>
+					<div class="alert alert-danger" role="alert">
+					<b>There was an error with your query or url parameters.</b>
+					</div>
+					<%
+				}
+				
+				}//close error check if statement	    
+				%>	
+					
                     </div>
                 </div>
             </div>
         </section>
+        
         <!-- Footer-->
         <footer class="bg-light py-5">
             <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2021 - FlyAway</div></div>

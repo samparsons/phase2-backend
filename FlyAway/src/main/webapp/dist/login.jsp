@@ -1,12 +1,5 @@
-<!--  
-HELLO SIMPLILEARN INSTRUCTORS:
-
-The theme was downloaded here: https://startbootstrap.com/theme/creative
-data sets were downloaded here: https://datahub.io/core/airport-codes (however I will dump my db for you to use).
-	mysqldump -u root -p flyaway > flyaway_backup.sql
-
--->
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -44,12 +37,12 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">FlyAway</a>
+                <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
                         <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/datagen">Generate Flights</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.html">Admin Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/FlyAway/dist/login.jsp">Admin Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -64,19 +57,66 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
                     </div>
                     <!-- login form from: https://bootsnipp.com/snippets/j6r4X 
                     -->
+                    <%
+                    String error = request.getParameter("error");
+                    String success = request.getParameter("success");
                     
+                    if(error!=null){
+                    	if(error.equals("1")){
+                    	%>
+                    	<div class="alert alert-danger" role="alert">
+							<b>Login Unsuccessful. Please contact admin services to validate your login.<b><br> 
+                    		Testers: If you're having issues, please click "Create Credentials to Test" link below, then use username 'admin' and password 'admin' to access the admin portal.
+						</div>
+                    	
+                    	<%
+                    	} else if(error.equals("2")){
+                    	%>
+                    		<div class="alert alert-danger" role="alert">
+							<b>Credentials already exist.<b><br> 
+                    		Use username 'admin' and password 'admin' to access the admin portal.
+						</div>
+                    	<%
+                    	}
+                    }
+                    
+                    if(success!=null){
+                    	
+                    	%>
+                    	<div class="alert alert-success" role="alert">
+                    	<%
+                    	if(success.equals("1")){
+                    		%>
+							<b>Credentials Created!<b><br>
+							<% 
+                    	}
+                    	if(success.equals("2")){
+                    		%>
+							<b>Credentials Updated!<b><br>
+							<% 
+                    	}
+							%>
+                    		Use username 'admin' and password 'admin' to access the admin portal.
+						</div>
+                    	<%
+                    }
+                    
+                    %>
                     <div class="card">
 						<article class="card-body">
 							<h4 class="card-title text-center mb-4 mt-1">Sign in</h4>
 							<hr>
-							<p class="text-success text-center">Enter your admin credentials.</p>
-							<form method="post" action="/FlyAway/dist/login">
+
+							<p class="text-center"><a href="/FlyAway/dist/adminOps?op=1" class="btn btn-primary btn-block mb-3">Create or Update Test Credentials</a></p>
+							<p class="text-center">Once you've generated credentials, use 'admin' for username and password.</p>
+							<h6>Enter your admin credentials.</h6>
+							<form method="post" action="/FlyAway/dist/adminOps?op=2">
 							<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-prepend">
 								    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
 								 </div>
-								<input name="" class="form-control" placeholder="Username" type="text">
+								<input name="username" class="form-control" placeholder="admin" type="text">
 							</div> <!-- input-group.// -->
 							</div> <!-- form-group// -->
 							<div class="form-group">
@@ -84,13 +124,12 @@ data sets were downloaded here: https://datahub.io/core/airport-codes (however I
 								<div class="input-group-prepend">
 								    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
 								 </div>
-							    <input class="form-control mb-5" placeholder="Password" type="password">
+							    <input class="form-control mb-5" placeholder="admin" type="password" name="password">
 							</div> <!-- input-group.// -->
 							</div> <!-- form-group// -->
 							<div class="form-group">
-							<button type="submit" class="btn btn-primary btn-block mb-3"> Login  </button>
+							<button type="submit" class="btn btn-primary btn-block mb-3"> Login </button>
 							</div> <!-- form-group// -->
-							<p class="text-center"><a href="#" class="btn">Forgot password?</a></p>
 							</form>
 						</article>
 					</div> <!-- card.// -->

@@ -5,8 +5,11 @@
 <%@ page import="tables.Customer" %>
 <%@ page import="tables.Payment" %>
 <%@ page import="tables.Airport" %>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <!-- 
 FOR TICKET: 
@@ -58,15 +61,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		
 		.box{
 		  position: absolute;
-		  top: calc(50% - 125px);
-		  top: -webkit-calc(50% - 125px);
-		  left: calc(50% - 300px);
-		  left: -webkit-calc(50% - 300px);
+		  top: auto;
+
+		  left: auto;
+
 		}
 		
 		.ticket{
-		  width: 600px;
-		  height: 250px;
+		  width: 800px;
+		  height: 350px;
 		  background: #FFB300;
 		  border-radius: 3px;
 		  box-shadow: 0 0 100px #aaa;
@@ -308,7 +311,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  position: absolute;
 		  top: 40px;
 		  width: 100%;
-		  height: 170px;
+		  height: 270px;
 		  background: #eee;
 		}
 		
@@ -358,7 +361,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		.sub-content{
 		  background: #e5e5e5;
 		  width: 100%;
-		  height: 100px;
+		  height: 140px;
 		  position: absolute;
 		  top: 70px;
 		}
@@ -557,7 +560,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">FlyAway</a>
+                <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
@@ -568,13 +571,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         </nav>
         <!-- Masthead-->
         <header class="masthead">
-            <div class="container px-4 px-lg-5 h-100">
+            <div class="container px-4 px-lg-5 h-200">
                 <div class="row gx-4 gx-lg-5 h-50 align-items-center justify-content-center text-center">
                     <div class="col-lg-8 align-self-end">
                         <h1 class="text-white font-weight-bold">Your Adventure Begins Now!</h1>
-                        
-                    </div>
-                    <div class="col-lg-8 align-self-baseline h50">
+                   </div>
+                    <div class="col-lg-8 align-self-end">
+                   
                         <div class="box">
 						  <ul class="left">
 						    <li></li>
@@ -623,23 +626,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 							
 							%>
 						    <span class="airline"><%=f.getAirlineName() %></span>
-						    <span class="airline airlineslip"><%=f.getAirlineName() %></span>
+
 						    <span class="boarding">Boarding pass</span>
 						    <div class="content">
-						      <span class="jfk"><%=airport_arrive.getIata_code() %></span>
+						      <span class="jfk"><%=airport_arrive.getIata_code()%></span>
 						      <span class="plane"><?xml version="1.0" ?><svg clip-rule="evenodd" fill-rule="evenodd" height="60" width="60" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"><g stroke="#222"><line fill="none" stroke-linecap="round" stroke-width="30" x1="300" x2="55" y1="390" y2="390"/><path d="M98 325c-9 10 10 16 25 6l311-156c24-17 35-25 42-50 2-15-46-11-78-7-15 1-34 10-42 16l-56 35 1-1-169-31c-14-3-24-5-37-1-10 5-18 10-27 18l122 72c4 3 5 7 1 9l-44 27-75-15c-10-2-18-4-28 0-8 4-14 9-20 15l74 63z" fill="#222" stroke-linejoin="round" stroke-width="10"/></g></svg></span>
-						      <span class="sfo"><%=airport_depart.getIata_code() %></span>
+						      <span class="sfo"><%=airport_depart.getIata_code()%></span>
 						      
-						      <span class="jfk jfkslip"><%=airport_arrive.getIata_code() %></span>
+						      <span class="jfk jfkslip"><%=airport_arrive.getIata_code()%></span>
 						      <span class="plane planeslip"><?xml version="1.0" ?><svg clip-rule="evenodd" fill-rule="evenodd" height="50" width="50" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"><g stroke="#222"><line fill="none" stroke-linecap="round" stroke-width="30" x1="300" x2="55" y1="390" y2="390"/><path d="M98 325c-9 10 10 16 25 6l311-156c24-17 35-25 42-50 2-15-46-11-78-7-15 1-34 10-42 16l-56 35 1-1-169-31c-14-3-24-5-37-1-10 5-18 10-27 18l122 72c4 3 5 7 1 9l-44 27-75-15c-10-2-18-4-28 0-8 4-14 9-20 15l74 63z" fill="#222" stroke-linejoin="round" stroke-width="10"/></g></svg></span>
-						      <span class="sfo sfoslip"><%=airport_depart.getIata_code() %></span>
+						      <span class="sfo sfoslip"><%=airport_depart.getIata_code()%></span>
 						      <div class="sub-content">
-						        <span class="watermark"><%=f.getAirlineName() %></span>
-						        <span class="name">PASSENGER NAME<br><span><%=c.getLastName() %>, <%=c.getFirstName() %></span></span>
+
+						        <span class="name">PASSENGER NAME<br><span><%=c.getLastName()%>, <%=c.getFirstName()%></span></span>
 						        <span class="flight">FLIGHT N&deg;<br><span>X3-65C3</span></span>
 						        <span class="gate">TERMINAL<br><span><%=f.getTerminal() %></span></span>
 						        <span class="seat">GATE<br><span><%=f.getGate() %></span></span>
-						        <span class="boardingtime">BOARDING TIME<br><span><%=f.getDateTime() %></span></span>
+						        <span class="boardingtime">BOARDING TIME<br><span><fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="<%=f.getDateTime() %>" /></span></span>
 						            
 						         <span class="flight flightslip">FLIGHT N&deg;<br><span>X3-65C3</span></span>
 						          <span class="seat seatslip">GATE<br><span><%=f.getGate() %></span></span>
@@ -651,7 +654,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						    <% se.close(); %>
 						  </div>
 						</div>
+					
                     </div>
+                   
                 </div>
             </div>
         </header>
