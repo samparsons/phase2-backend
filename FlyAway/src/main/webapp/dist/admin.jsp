@@ -241,6 +241,7 @@
                     		 </tbody>
 						</table>
                     	<%
+                    	se.close();
                     	} else if(pg_id==2){ //Airlines
                     		//TABLE COLUMN NAMES
                     		%>
@@ -272,6 +273,7 @@
                     		 </tbody>
 						</table>
                     	<%
+                    	se.close();
                     	} else if (pg_id==3) { //Flights
                     		//TABLE COLUMN NAMES
                     		%>
@@ -324,6 +326,7 @@
                     		 </tbody>
 						</table>
                     		<%
+                    		se.close();
                     		
                     	} else if (pg_id==4) { // change pw
                     	%>
