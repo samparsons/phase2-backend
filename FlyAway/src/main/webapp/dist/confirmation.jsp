@@ -1,11 +1,20 @@
-<%@ page import="org.hibernate.Session" %>
-<%@ page import="org.hibernate.SessionFactory" %>
 <%@ page import="util.HibernateUtil" %>
 <%@ page import="tables.Flight" %>
+<%@ page import="tables.FlightRegistry" %>
 <%@ page import="tables.Customer" %>
 <%@ page import="tables.Payment" %>
 <%@ page import="tables.Airport" %>
-
+<%@ page import="org.hibernate.Session" %>
+<%@ page import="org.hibernate.SessionFactory" %>
+<%@ page import="org.hibernate.Query" %>
+<%@ page import="org.hibernate.HibernateException" %>
+<%@ page import="org.hibernate.SessionFactory" %>
+<%@ page import="org.hibernate.criterion.Restrictions" %>
+<%@ page import="javax.persistence.criteria.Predicate" %>
+<%@ page import="javax.persistence.criteria.CriteriaBuilder" %>
+<%@ page import="javax.persistence.criteria.CriteriaQuery" %>
+<%@ page import="javax.persistence.criteria.Root" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -53,6 +62,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
  	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<style>
+	/*
 		body{
 		  margin: 0;
 		  padding: 0;
@@ -366,7 +376,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  top: 70px;
 		}
 		
-		/*.watermark{
+		.watermark{
 		  position: absolute;
 		  left: 5px;
 		  top: -10px;
@@ -374,7 +384,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  font-size: 110px;
 		  font-weight: bold;
 		  color: rgba(255,255,255,0.2);
-		}*/
+		}
 		
 		.name{
 		  position: absolute;
@@ -553,12 +563,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		.airlineslip{
 		  left: 455px;
 		}
-
+	*/
 	</style>
 </head>
 <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="/FlyAway/dist/index.html">FlyAway</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -569,13 +579,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 </div>
             </div>
         </nav>
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container px-4 px-lg-5 h-200">
-                <div class="row gx-4 gx-lg-5 h-50 align-items-center justify-content-center text-center">
-                    <div class="col-lg-8 align-self-end">
-                        <h1 class="text-white font-weight-bold">Your Adventure Begins Now!</h1>
-                   </div>
+        
+                        
+                   
+        <section class="page-section bg-light" id="register">
+	            <div class="container px-5 px-lg-5">
+	                <div class="row gx-5 gx-lg-5 justify-content-center">
+	                <h1 class="text-primary font-weight-bold">Your Adventure Begins Now!</h1>
+                   <% 
+                   		
+                   	try{
+                   		Session se = HibernateUtil.getSessionFactory().openSession();
+					  	int flight_id = Integer.parseInt(request.getParameter("flight_id"));
+					  	int customer_id = Integer.parseInt(request.getParameter("customer_id"));
+					  	int payment_id = Integer.parseInt(request.getParameter("payment_id"));
+					  	
+				    	se.beginTransaction();
+						CriteriaBuilder cb = se.getCriteriaBuilder();
+						CriteriaQuery<FlightRegistry> cr = cb.createQuery(FlightRegistry.class);
+						Root<FlightRegistry> root = cr.from(FlightRegistry.class);
+						/* helpful link: https://www.baeldung.com/hibernate-criteria-queries*/
+	
+						Predicate flightIdMatch = cb.equal(root.get("flight"),flight_id);
+						Predicate customerIdMatch = cb.equal(root.get("customer"),customer_id);
+						Predicate paymentIdMatch = cb.equal(root.get("payment"),payment_id);
+						
+						cr.select(root).where(cb.and(flightIdMatch,customerIdMatch,paymentIdMatch));
+						Query<FlightRegistry> query = se.createQuery(cr);
+			            List<FlightRegistry> flightReg = query.getResultList();
+					  	
+			            for(FlightRegistry fr : flightReg){
+			            	
+						Flight f = fr.getFlight();
+						Customer c = fr.getCustomer();
+						Payment p = fr.getPayment();
+						Airport airport_arrive = f.getAirportArrive();
+						Airport airport_depart = f.getAirportDepart();
+					
+					%>
+                    <!-- 
                     <div class="col-lg-8 align-self-end">
                    
                         <div class="box">
@@ -613,18 +655,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						    <li></li>
 						  </ul>
 						  <div class="ticket">
-						  <% 
-						  	Session se = HibernateUtil.getSessionFactory().openSession();
-						  	int flight_id = Integer.parseInt(request.getParameter("flight_id"));
-						  	int customer_id = Integer.parseInt(request.getParameter("customer_id"));
-						  	int payment_id = Integer.parseInt(request.getParameter("payment_id"));
-							Flight f = se.load(Flight.class,flight_id);
-							Customer c = se.load(Customer.class,customer_id);
-							Payment p = se.load(Payment.class,payment_id);
-							Airport airport_arrive = f.getAirportArrive();
-							Airport airport_depart = f.getAirportDepart();
-							
-							%>
+						  
 						    <span class="airline"><%=f.getAirlineName() %></span>
 
 						    <span class="boarding">Boarding pass</span>
@@ -640,8 +671,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 						        <span class="name">PASSENGER NAME<br><span><%=c.getLastName()%>, <%=c.getFirstName()%></span></span>
 						        <span class="flight">FLIGHT N&deg;<br><span>X3-65C3</span></span>
-						        <span class="gate">TERMINAL<br><span><%=f.getTerminal() %></span></span>
-						        <span class="seat">GATE<br><span><%=f.getGate() %></span></span>
+						        <span class="gate">TERMINAL<br>/GATE<br><span><%=f.getTerminal() %>/<%=f.getGate() %></span></span>
+						        <span class="seat">TICKET #<br><span><%=fr.getFlight_registry_Id() %></span></span>
 						        <span class="boardingtime">BOARDING TIME<br><span><fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="<%=f.getDateTime() %>" /></span></span>
 						            
 						         <span class="flight flightslip">FLIGHT N&deg;<br><span>X3-65C3</span></span>
@@ -651,16 +682,41 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						    </div>
 						    <div class="barcode"></div>
 						    <div class="barcode slip"></div>
-						    <% se.close(); %>
+						   
 						  </div>
 						</div>
 					
                     </div>
-                   
-                </div>
-            </div>
-        </header>
+                    </section>
+                    -->
+              
+                    <span><%=f.getAirlineName() %></span>
 
+				    <span>Boarding pass</span><br>
+				    <span>Airport codes: </span>
+				      <span><%=airport_arrive.getIata_code()%> &</span><span><%=airport_depart.getIata_code()%></span><br>
+				      <span>PASSENGER NAME: <span><%=c.getLastName()%>, <%=c.getFirstName()%></span></span><br>
+				      <span>FLIGHT N&deg;: <span>X3-65C3</span></span><br>
+				      <span>TERMINAL/GATE: <span><%=f.getTerminal() %>/<%=f.getGate() %></span></span><br>
+				      <span>TICKET #: <span><%=fr.getFlight_registry_Id() %></span></span><br>
+				      <span>BOARDING TIME<br><span><fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="<%=f.getDateTime() %>" /></span></span>
+         				<hr>   
+              		
+                    
+                    <% 
+		            			}
+			            		se.close();
+				            } catch (Exception e){
+				            	System.out.println(e.getMessage());
+				            	%>
+				            	<p>Ticket generation error.</p>
+				            	<%
+				            }
+				            %>
+                
+</div>
+              	</div>
+              </section>
 
 </body>
 </html>

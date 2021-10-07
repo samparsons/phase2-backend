@@ -73,13 +73,13 @@ public class DataGen extends HttpServlet {
 			
 			if(j>20) {
 				//there are 9225 rows in tbl_airports
-				randomAirportArrive = ThreadLocalRandom.current().nextInt(1,9225 + 1);
+				randomAirportArrive = ThreadLocalRandom.current().nextInt(1,9225 + 2);
 				
 				//there are 9225 rows in tbl_airports
-				randomAirportDepart = ThreadLocalRandom.current().nextInt(1,9225 + 1);
+				randomAirportDepart = ThreadLocalRandom.current().nextInt(1,9225 + 2);
 				
 				//there are 1571 rows in tbl_airports
-				randomAirline = ThreadLocalRandom.current().nextInt(1,1571 + 1);
+				randomAirline = ThreadLocalRandom.current().nextInt(1,1571 + 2);
 				
 				while(randomAirportDepart==randomAirportArrive) {
 					randomAirportDepart+=10;
@@ -108,7 +108,7 @@ public class DataGen extends HttpServlet {
 			} else {
 				randomAirportArrive = 2;
 				randomAirportDepart = 10;
-				randomAirline = j+1;
+				randomAirline = j+2;
 				dateTime = new Date(now);
 				terminal = "A";
 				gate = j+1;
