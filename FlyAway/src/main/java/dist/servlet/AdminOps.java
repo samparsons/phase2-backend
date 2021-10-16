@@ -55,27 +55,38 @@ public class AdminOps extends HttpServlet {
 			
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Admin admin = new Admin(username,password);
-			Admin check = session.load(Admin.class,0);
-			if(check==null) {
-				try {
-				
-				Transaction trans = session.beginTransaction();
-				session.save(admin);		
-				trans.commit();		
-				session.close();
-				response.sendRedirect("login.jsp?success=1");
-				} catch (Exception e) {
-					response.sendRedirect("login.jsp?error=2");
+			try {
+				CriteriaBuilder cb = session.getCriteriaBuilder();
+				CriteriaQuery<Admin> cr = cb.createQuery(Admin.class);
+				Root<Admin> root = cr.from(Admin.class);
+				cr.select(root);
+				Query<Admin> query = session.createQuery(cr);
+				List<Admin> admins = query.getResultList(); 
+				if(admins.size()==0) {
+					try {
+					
+					Transaction trans = session.beginTransaction();
+					session.save(admin);		
+					trans.commit();		
+					session.close();
+					response.sendRedirect("login.jsp?success=1");
+					} catch (Exception e) {
+						response.sendRedirect("login.jsp?error=2");
+					}
+				} else {
+					admin = admins.get(0);
+					admin.setPassword(password);
+					Transaction trans = session.beginTransaction();
+					session.save(admin);		
+					trans.commit();		
+					session.close();
+					response.sendRedirect("login.jsp?success=2");
+					
 				}
-			} else {
-				check.setPassword(password);
-				Transaction trans = session.beginTransaction();
-				session.save(check);		
-				trans.commit();		
-				session.close();
-				response.sendRedirect("login.jsp?success=2");
-				
+			} catch (Exception e) {
+				// do nothing;
 			}
+			
 		} else if(op_num==2) {
 			//check username and pw
 			String username = request.getParameter("username");
